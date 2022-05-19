@@ -1,0 +1,27 @@
+{
+	"tasks": [
+		{
+			"label": "Build C++20",
+			"type": "cppbuild",
+			"command": "cmake",
+			"args": [
+				"--build",
+				"build",
+				"--config",
+				"Debug",
+				"--target",
+				"ALL_BUILD",
+				"-j",
+				"18"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+		}
+	],
+	"version": "2.0.0"
+}

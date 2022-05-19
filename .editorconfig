@@ -1,0 +1,25 @@
+[*]
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+indent_style = tab
+trim_trailing_whitespace = true
+
+[*.cpp]
+indent_size = 4
+indent_style = space
+
+[*.h]
+indent_size = 4
+indent_style = space
+
+[*.hpp]
+indent_size = 4
+indent_style = space
+
+[*.c]
+indent_size = 4
+indent_style = space
+
+[*.cc]
