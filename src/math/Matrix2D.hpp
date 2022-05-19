@@ -7,6 +7,7 @@
 #include <functional> // function && bind
 #include <new>        // placement new && bad_alloc
 #include <random>     // uniform_real_distribution && default_random_engine
+#include <ranges>     // ranges::copy && ranges::transform
 #include <sstream>    // stringstream
 #include <string>     // string
 #include <utility>    // move && as_const
@@ -288,10 +289,10 @@ class Matrix2D {
     }
 
     // Reduce the matrix to a single value
-    template<typename T>
+    template <typename T>
     T reduce(T start, std::function<T(T, float)> f) const {
         T result = start;
-        for(const float &e : m) {
+        for (const float &e : m) {
             result = f(result, e);
         }
         return result;
@@ -368,8 +369,8 @@ class Matrix2D {
     // Writes the matrix to a stream
     friend std::ostream &operator<<(std::ostream &os, const Matrix2D &m) {
         os << m.cols << " " << m.rows << "\n";
-        for(std::size_t row = 0; row < m.rows; ++row) {
-            for(std::size_t col = 0; col < m.cols; ++col) {
+        for (std::size_t row = 0; row < m.rows; ++row) {
+            for (std::size_t col = 0; col < m.cols; ++col) {
                 os << m.m[row * m.cols + col] << " ";
             }
             os << "\n";
@@ -388,8 +389,8 @@ class Matrix2D {
     friend std::istream &operator>>(std::istream &is, Matrix2D &m) {
         is >> m.cols >> m.rows;
         m.m.resize(m.cols * m.rows);
-        for(std::size_t row = 0; row < m.rows; ++row) {
-            for(std::size_t col = 0; col < m.cols; ++col) {
+        for (std::size_t row = 0; row < m.rows; ++row) {
+            for (std::size_t col = 0; col < m.cols; ++col) {
                 is >> m.m[row * m.cols + col];
             }
         }
@@ -466,6 +467,47 @@ class Matrix2D {
                 result.m[i] = m[i];
             }
             return result;
+        }
+    }
+
+    // Write binary to a stream
+    void write_bin(std::ostream &of) const {
+        of.write((char *)&cols, sizeof(cols));
+        of.write((char *)&rows, sizeof(rows));
+        of.write((char *)&m[0], sizeof(float) * m.size());
+    }
+
+    // load from binary stream
+    void load_bin(std::istream &is) {
+        is.read((char *)&cols, sizeof(cols));
+        is.read((char *)&rows, sizeof(rows));
+        m.resize(cols * rows);
+        float f;
+        for(int i = 0; i < cols * rows; i++) {
+            is.read((char *)&f, sizeof(float));
+            m[i] = f;
+        }
+    }
+
+    // Write binary compact to a file
+    void write_bin_compact(std::ostream &of) const {
+        of.write((char *)&cols, sizeof(cols));
+        of.write((char *)&rows, sizeof(rows));
+        for(const float &v : m) {
+            unsigned char c = (unsigned char)(v * 255.0f);
+            of.write((char *)&c, sizeof(c));
+        }
+    }
+
+    // load from binary stream
+    void load_bin_compact(std::istream &is) {
+        is.read((char *)&cols, sizeof(cols));
+        is.read((char *)&rows, sizeof(rows));
+        m.resize(cols * rows);
+        for(float &v : m) {
+            unsigned char c;
+            is.read((char *)&c, sizeof(c));
+            v = (float)c / 255.0f;
         }
     }
 };

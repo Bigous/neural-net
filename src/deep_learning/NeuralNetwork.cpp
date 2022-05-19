@@ -145,10 +145,35 @@ void NeuralNetwork::save(const std::string &file_string) {
     std::cout << "Successfully written to '" << file_string << "'" << std::endl;
 }
 
+void NeuralNetwork::save_bin(const std::string &file_string) {
+    std::ofstream file(file_string, std::ios::binary | std::ios::trunc | std::ios::out);
+    file.write((char*)&input, sizeof(input));
+    file.write((char*)&hidden, sizeof(hidden));
+    file.write((char*)&output, sizeof(output));
+    file.write((char*)&learning_rate, sizeof(learning_rate));
+    hidden_weights.write_bin(file);
+    output_weights.write_bin(file);
+    file.close();
+    std::cout << "Successfully written to '" << file_string << "'" << std::endl;
+}
+
 void NeuralNetwork::load(const std::string &file_string) {
     std::ifstream file(file_string);
     file >> input >> hidden >> output >> learning_rate >> hidden_weights >>
         output_weights;
+    file.close();
+    std::cout << "Successfully loaded from '" << file_string << "'"
+              << std::endl;
+}
+
+void NeuralNetwork::load_bin(const std::string &file_string) {
+    std::ifstream file(file_string, std::ios::binary | std::ios::in);
+    file.read((char*)&input, sizeof(input));
+    file.read((char*)&hidden, sizeof(hidden));
+    file.read((char*)&output, sizeof(output));
+    file.read((char*)&learning_rate, sizeof(learning_rate));
+    hidden_weights.load_bin(file);
+    output_weights.load_bin(file);
     file.close();
     std::cout << "Successfully loaded from '" << file_string << "'"
               << std::endl;

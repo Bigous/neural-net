@@ -79,6 +79,11 @@
 		"xmemory": "cpp",
 		"xstring": "cpp",
 		"xtree": "cpp",
-		"xutility": "cpp"
-	}
+		"xutility": "cpp",
+		"ranges": "cpp",
+		"span": "cpp"
+	},
+	"binary-file-viewer.parserFolders": [
+		"R:\\Richard\\src\\playground\\c++\\neural-net\\parsers"
+	]
 }

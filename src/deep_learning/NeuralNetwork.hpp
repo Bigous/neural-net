@@ -23,5 +23,7 @@ class NeuralNetwork {
     Matrix2D classify(Matrix2D input_data);
     void save(const std::string &file_string);
     void load(const std::string &file_string);
+    void save_bin(const std::string &file_string);
+    void load_bin(const std::string &file_string);
     void print();
 };
