@@ -3,8 +3,8 @@
 #include "../math/Matrix2D.hpp"
 
 struct Img {
-    Matrix2D img_data;
     int label;
+    Matrix2D img_data;
 
     void print();
 };

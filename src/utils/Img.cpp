@@ -4,6 +4,8 @@
 #include <iostream>
 #include <ranges>
 
+#include "Serialization.hpp"
+
 std::string getColor(float value) {
     if (value <= 0) {
         // ANSI black
@@ -76,10 +78,9 @@ bool save_binary_imgs(const std::string &file_string,
         return false;
     }
     auto size = imgs.size();
-    file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+    write(file, size);
     for (const auto &img : imgs) {
-        file.write(reinterpret_cast<const char *>(&img.label),
-                   sizeof(img.label));
+        write(file, img.label);
         img.img_data.write_bin(file);
     }
     return true;
@@ -91,7 +92,7 @@ std::vector<Img> load_binary_imgs(const std::string &file_string) {
         return {};
     }
     std::size_t size;
-    file.read(reinterpret_cast<char *>(&size), sizeof(size));
+    read(file, size);
     if (size <= 0) {
         return {};
     }
@@ -99,7 +100,7 @@ std::vector<Img> load_binary_imgs(const std::string &file_string) {
     imgs.reserve(size);
     for (int i = 0; i < size; ++i) {
         Img img;
-        file.read(reinterpret_cast<char *>(&img.label), sizeof(img.label));
+        read(file, img.label);
         img.img_data.load_bin(file);
         imgs.push_back(std::move(img));
     }
@@ -113,10 +114,9 @@ bool save_binary_compact_imgs(const std::string &file_string,
         return false;
     }
     auto size = imgs.size();
-    file.write(reinterpret_cast<const char *>(&size), sizeof(size));
+    write(file, size);
     for (const auto &img : imgs) {
-        file.write(reinterpret_cast<const char *>(&img.label),
-                   sizeof(img.label));
+        write(file, img.label);
         img.img_data.write_bin_compact(file);
     }
     return true;
@@ -128,7 +128,7 @@ std::vector<Img> load_binary_compact_imgs(const std::string &file_string) {
         return {};
     }
     std::size_t size;
-    file.read(reinterpret_cast<char *>(&size), sizeof(size));
+    read(file, size);
     if (size <= 0) {
         return {};
     }
@@ -136,7 +136,7 @@ std::vector<Img> load_binary_compact_imgs(const std::string &file_string) {
     imgs.reserve(size);
     for (int i = 0; i < size; ++i) {
         Img img;
-        file.read(reinterpret_cast<char *>(&img.label), sizeof(img.label));
+        read(file, img.label);
         img.img_data.load_bin_compact(file);
         imgs.push_back(std::move(img));
     }

@@ -13,6 +13,8 @@
 #include <utility>    // move && as_const
 #include <vector>     // vector
 
+#include "../utils/Serialization.hpp"
+
 class Matrix2D {
     std::vector<float> m;
     std::size_t cols;
@@ -472,42 +474,39 @@ class Matrix2D {
 
     // Write binary to a stream
     void write_bin(std::ostream &of) const {
-        of.write((char *)&cols, sizeof(cols));
-        of.write((char *)&rows, sizeof(rows));
-        of.write((char *)&m[0], sizeof(float) * m.size());
+        write(of, cols);
+        write(of, rows);
+        write(of, m);
     }
 
     // load from binary stream
     void load_bin(std::istream &is) {
-        is.read((char *)&cols, sizeof(cols));
-        is.read((char *)&rows, sizeof(rows));
+        read(is, cols);
+        read(is, rows);
         m.resize(cols * rows);
-        float f;
-        for(int i = 0; i < cols * rows; i++) {
-            is.read((char *)&f, sizeof(float));
-            m[i] = f;
-        }
+        read(is, m);
     }
 
     // Write binary compact to a file
     void write_bin_compact(std::ostream &of) const {
-        of.write((char *)&cols, sizeof(cols));
-        of.write((char *)&rows, sizeof(rows));
-        for(const float &v : m) {
-            unsigned char c = (unsigned char)(v * 255.0f);
-            of.write((char *)&c, sizeof(c));
+        write(of, cols);
+        write(of, rows);
+        unsigned char c;
+        for(const auto& v : m) {
+            c = (unsigned char)(v * 255.0f);
+            write(of, c);
         }
     }
 
     // load from binary stream
     void load_bin_compact(std::istream &is) {
-        is.read((char *)&cols, sizeof(cols));
-        is.read((char *)&rows, sizeof(rows));
+        read(is, cols);
+        read(is, rows);
         m.resize(cols * rows);
-        for(float &v : m) {
-            unsigned char c;
-            is.read((char *)&c, sizeof(c));
-            v = (float)c / 255.0f;
+        unsigned char c;
+        for(auto &v : m) {
+            read(is, c);
+            v = (decltype(v))c / 255.0f;
         }
     }
 };

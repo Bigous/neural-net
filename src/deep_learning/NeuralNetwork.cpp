@@ -147,10 +147,10 @@ void NeuralNetwork::save(const std::string &file_string) {
 
 void NeuralNetwork::save_bin(const std::string &file_string) {
     std::ofstream file(file_string, std::ios::binary | std::ios::trunc | std::ios::out);
-    file.write((char*)&input, sizeof(input));
-    file.write((char*)&hidden, sizeof(hidden));
-    file.write((char*)&output, sizeof(output));
-    file.write((char*)&learning_rate, sizeof(learning_rate));
+    write(file, input);
+    write(file, hidden);
+    write(file, output);
+    write(file, learning_rate);
     hidden_weights.write_bin(file);
     output_weights.write_bin(file);
     file.close();
@@ -168,10 +168,10 @@ void NeuralNetwork::load(const std::string &file_string) {
 
 void NeuralNetwork::load_bin(const std::string &file_string) {
     std::ifstream file(file_string, std::ios::binary | std::ios::in);
-    file.read((char*)&input, sizeof(input));
-    file.read((char*)&hidden, sizeof(hidden));
-    file.read((char*)&output, sizeof(output));
-    file.read((char*)&learning_rate, sizeof(learning_rate));
+    read(file, input);
+    read(file, hidden);
+    read(file, output);
+    read(file, learning_rate);
     hidden_weights.load_bin(file);
     output_weights.load_bin(file);
     file.close();
